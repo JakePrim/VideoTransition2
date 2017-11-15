@@ -70,7 +70,7 @@ public class FragmentB extends Fragment {
                 intermediary.setTransitionName(transitionName);
             } else {
                 ExitFragmentTransition exitFragmentTransition = FragmentTransition.with(this)
-                        .to(intermediary).start(savedInstanceState);
+                        .to(intermediary).duration(500).start(savedInstanceState);
                 exitFragmentTransition.startExitListening();
             }
         }
