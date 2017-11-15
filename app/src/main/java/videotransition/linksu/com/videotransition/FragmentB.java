@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.kogitune.activity_transition.fragment.ExitFragmentTransition;
+import com.kogitune.activity_transition.fragment.FragmentTransition;
+import com.kogitune.activity_transition.fragment.FragmentTransitionLauncher;
 import com.linksu.video_manager_library.ui.LVideoView;
 
 /**
@@ -25,8 +28,7 @@ import com.linksu.video_manager_library.ui.LVideoView;
  * 修订历史：
  * ================================================
  */
-@SuppressLint("NewApi")
-public class FragmentB extends Fragment implements Transition.TransitionListener {
+public class FragmentB extends Fragment {
 
     ImageView imageView;
 
@@ -58,47 +60,20 @@ public class FragmentB extends Fragment implements Transition.TransitionListener
         Bundle b = getArguments();
         if (b != null) {
             String transitionName = b.getString("transitionName");
+            intermediary.removeAllViews();
+            ViewGroup last = (ViewGroup) lVideoView.getParent();//找到videoitemview的父类，然后remove
+            if (last != null && last.getChildCount() > 0) {
+                last.removeAllViews();
+            }
+            intermediary.addView(lVideoView);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 intermediary.setTransitionName(transitionName);
-                intermediary.removeAllViews();
-                ViewGroup last = (ViewGroup) lVideoView.getParent();//找到videoitemview的父类，然后remove
-                if (last != null && last.getChildCount() > 0) {
-                    last.removeAllViews();
-                }
-                intermediary.addView(lVideoView);
+            } else {
+                ExitFragmentTransition exitFragmentTransition = FragmentTransition.with(this)
+                        .to(intermediary).start(savedInstanceState);
+                exitFragmentTransition.startExitListening();
             }
         }
         return view;
-    }
-
-    @Override
-    public void onTransitionStart(Transition transition) {
-        intermediary.removeAllViews();
-        ViewGroup last = (ViewGroup) lVideoView.getParent();//找到videoitemview的父类，然后remove
-        if (last != null && last.getChildCount() > 0) {
-            last.removeAllViews();
-        }
-        intermediary.addView(lVideoView);
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    public void onTransitionEnd(Transition transition) {
-        transition.removeListener(this);
-    }
-
-    @Override
-    public void onTransitionCancel(Transition transition) {
-
-    }
-
-    @Override
-    public void onTransitionPause(Transition transition) {
-
-    }
-
-    @Override
-    public void onTransitionResume(Transition transition) {
-
     }
 }

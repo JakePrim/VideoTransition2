@@ -2,6 +2,7 @@ package videotransition.linksu.com.videotransition;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,10 +40,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.BaliViewHolder
         return new BaliViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_item, parent, false));
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onBindViewHolder(final BaliViewHolder holder, final int position) {
-        holder.itemFlImg.setTransitionName("transition" + position);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.itemFlImg.setTransitionName("transition" + position);
+        }
         holder.tv_title.setVisibility(View.VISIBLE);
         holder.tv_title.setText("sdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
         holder.itemFlImg.setVisibility(View.GONE);
