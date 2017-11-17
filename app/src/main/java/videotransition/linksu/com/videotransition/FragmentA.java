@@ -1,10 +1,14 @@
 package videotransition.linksu.com.videotransition;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +43,9 @@ public class FragmentA extends Fragment implements ItemAdapter.OnPlaceClickListe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().getWindow().setFormat(PixelFormat.TRANSLUCENT);
     }
+
 
     private View view;
 
@@ -58,9 +64,7 @@ public class FragmentA extends Fragment implements ItemAdapter.OnPlaceClickListe
             rv.setAdapter(adapter);
             adapter.setPlacesList(list);
         }
-        if (lVideoView != null && lVideoView.isPlayer()) {
-            addVideo();
-        }
+
         return view;
     }
 
@@ -72,6 +76,32 @@ public class FragmentA extends Fragment implements ItemAdapter.OnPlaceClickListe
     }
 
     private int position = 0;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("linksu",
+                "onResume(FragmentA.java:83)");
+        if (lVideoView != null && lVideoView.isPlayer()) {
+            addVideo();
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("linksu",
+                "onPause(FragmentA.java:91)");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("linksu",
+                "onStart(FragmentA.java:98)");
+
+    }
 
     @Override
     public void onPlaceClicked(View sharedView, int position) {
@@ -86,14 +116,21 @@ public class FragmentA extends Fragment implements ItemAdapter.OnPlaceClickListe
                 last.removeAllViews();
             }
             itemFlImg.addView(lVideoView);
-            lVideoView.startLive("http://rmrbtest-image.peopleapp.com/upload/video/201707/1499914158feea8c512f348b4a.mp4");
+            lVideoView.startLive("http://rmrbtest-image.peopleapp.com/upload/video/201711/1510738154b9f0dd9fec40ada2.mp4");
         } else {
-            Fragment fragmentB = getFragmentManager().findFragmentByTag(TAG);
-            if (fragmentB == null) fragmentB = FragmentB.newInstance(lVideoView);
-            Bundle bundle = new Bundle();
-            bundle.putString("transitionName", "transition" + position);
-            fragmentB.setArguments(bundle);
-            ((MainActivity) getActivity()).showFragmentWithTransition(this, fragmentB, "movieDetail", sharedView, "transition" + position);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                        sharedView, "transition" + position);
+                Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
+                intent.putExtra("transitionName", "transition" + position);
+                startActivity(intent, options.toBundle());
+            }
+//            Fragment fragmentB = getFragmentManager().findFragmentByTag(TAG);
+//            if (fragmentB == null) fragmentB = FragmentB.newInstance(lVideoView);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("transitionName", "transition" + position);
+//            fragmentB.setArguments(bundle);
+//            ((MainActivity) getActivity()).showFragmentWithTransition(this, fragmentB, "movieDetail", sharedView, "transition" + position);
         }
     }
 

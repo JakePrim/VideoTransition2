@@ -1,9 +1,12 @@
 package videotransition.linksu.com.videotransition;
 
+import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 /**
  * ================================================
@@ -14,11 +17,25 @@ import android.support.v7.app.AppCompatActivity;
  * 修订历史：
  * ================================================
  */
-public class NewsDetailActivity extends AppCompatActivity {
+public class NewsDetailActivity extends BaseActivity {
+    private FrameLayout intermediary;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
+        String transitionName = getIntent().getStringExtra("transitionName");
+        intermediary = (FrameLayout) findViewById(R.id.intermediary);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intermediary.setTransitionName(transitionName);
+        }
+        intermediary.removeAllViews();
+        ViewGroup last = (ViewGroup) lVideoView.getParent();//找到videoitemview的父类，然后remove
+        if (last != null && last.getChildCount() > 0) {
+            last.removeAllViews();
+        }
+        intermediary.addView(lVideoView);
     }
 
     @Override

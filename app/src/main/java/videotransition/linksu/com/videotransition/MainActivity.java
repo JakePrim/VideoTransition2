@@ -5,15 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.kogitune.activity_transition.fragment.FragmentTransitionLauncher;
-import com.linksu.video_manager_library.ui.LVideoView;
 
-public class MainActivity extends AppCompatActivity {
-
-    private LVideoView lVideoView;
+public class MainActivity extends BaseActivity {
 
     private FragmentA fragment;
 
@@ -21,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        lVideoView = new LVideoView(this);
         if (fragment == null) {
             fragment = FragmentA.newInstance(lVideoView);
             getSupportFragmentManager().beginTransaction().add(R.id.intermediary,
@@ -68,5 +63,9 @@ public class MainActivity extends AppCompatActivity {
             }
             fragmentTransaction.commit();
         }
+    }
+
+    public void showActivityTransition(Fragment current, String tag, View sharedView, String sharedElementName) {
+
     }
 }
