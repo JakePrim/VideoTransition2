@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.kogitune.activity_transition.ActivityTransition;
+import com.kogitune.activity_transition.ExitActivityTransition;
+
 /**
  * ================================================
  * 作    者：linksus
@@ -27,22 +30,31 @@ public class NewsDetailActivity extends BaseActivity {
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         String transitionName = getIntent().getStringExtra("transitionName");
         intermediary = (FrameLayout) findViewById(R.id.intermediary);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            intermediary.setTransitionName(transitionName);
-        }
+
         intermediary.removeAllViews();
         ViewGroup last = (ViewGroup) lVideoView.getParent();//找到videoitemview的父类，然后remove
         if (last != null && last.getChildCount() > 0) {
             last.removeAllViews();
         }
         intermediary.addView(lVideoView);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intermediary.setTransitionName(transitionName);
+        } else {
+            exitTransition = ActivityTransition.with(getIntent()).to(intermediary).duration(500).start(savedInstanceState);
+        }
+
+
     }
+
+    private ExitActivityTransition exitTransition;
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
+        } else {
+            exitTransition.exit(this);
         }
     }
 }
